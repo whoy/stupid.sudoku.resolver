@@ -9,17 +9,21 @@ public class Element {
 
     private Long value;
     private Set<Long> posibleValues;
-    //private ElementGroup
+    //private ElementPosition position;
 
-    public static void main(String[] args) {
+    // собирается из 2х чсисел 0-8
+    private int position;
 
-        int defaultMask = 0b0000_1111_1111_1111;
-        int squareMask = 0b1111_1111_0000_0000;
-        int lineMask = 0b1111_0000_1111_0000;
-        int rowMask = 0b1111_0000_0000_1111;
-
-        System.out.println(Integer.toBinaryString(defaultMask | squareMask));
-
+    // // TODO: 22.10.2016 валидация введённых значений
+    public Element(Long value, int rowNumber, int lineNumber) {
+        this.value = value;
+        position = calculatePosition(rowNumber, lineNumber);
     }
 
+    private int calculatePosition(int rowNumber, int lineNumber) {
+        // // TODO: 22.10.2016 заменить проверку после введения валидации
+        if (rowNumber < 0 || rowNumber > 8 || lineNumber < 0 || lineNumber > 8)
+            throw new IllegalArgumentException();
+        return 0;
+    }
 }
