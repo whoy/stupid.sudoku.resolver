@@ -1,4 +1,4 @@
-package ru.whoy.asList;
+package ru.whoy.odm;
 
 import java.util.*;
 
@@ -99,77 +99,57 @@ public class Sudoku {
     private Set<Long> createFullSet() {
         return new HashSet<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L));
     }
-/*
-    public void resolve(Element[][] field) {
-        Element[][] localField = copyArray(field);
-        for (int i = 0; i < MAGIC_NUMBER; i++) {
-            for (int j = 0; j < MAGIC_NUMBER; j++) {
-                if (localField[i][j].getValue() == null) {
-                    Iterator<Long> iterator = localField[i][j].getPossibleValues().iterator();
-                    while(iterator.hasNext()) {
-                        Long value = iterator.next();
-                        if (isItPossible(copyArray(field), i, j, value)) {
-                            localField[i][j].setValue(value);
-                            initPossibleValues(localField);
-                            resolve(localField);
+
+
+    public void tryResolve(Element[] elements) {
+        Element[] answer = resolve(copyArray(elements));
+        if (isNotEmpty(answer))
+            show(answer);
+    }
+
+    private Element[] resolve(Element[] elements) {
+        for (int i = 0; i < elements.length; i++) {
+            if(elements[i].getValue() == null) {
+                for(Long value : elements[i].getPossibleValues()) {
+                    Element[] localElements = createAndInitNew(copyArray(elements), elements[i], value, i);
+                    if(isNotEmpty(localElements)){
+                        Element[] win = resolve(localElements);
+                        if(isWin(win)) {
+                            return win;
                         }
                     }
                 }
             }
         }
+        return null;
     }
 
-    private boolean isItPossible(Element[][] elements, int i, int j, Long value) {
-        elements[i][j].setValue(value);
+    private Element[] createAndInitNew(Element[] elements, Element element, Long value, int i) {
+        elements[i] = new Element(element, value);
         initPossibleValues(elements);
-        return !isHasNullPossibleSets(elements);
+        return elements;
     }
 
-    private boolean isHasNullPossibleSets(Element[][] elements) {
-        for (int i = 0; i < MAGIC_NUMBER; i++) {
-            for (int j = 0; j < MAGIC_NUMBER; j++) {
-                if (elements[i][j].getValue() == null && (elements[i][j].getPossibleValues() == null || elements[i][j].getPossibleValues().isEmpty()))
-                    return true;
+    private boolean isWin(Element[] win) {
+        for (Element el : win) {
+            if (el.getValue() == null && (el.getPossibleValues() == null || el.getPossibleValues().isEmpty())) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
-*/
-    private Element[][] copyArray(Element[][] field) {
-        Element[][] copy = new Element[MAGIC_NUMBER][MAGIC_NUMBER];
-        for (int i = 0; i < MAGIC_NUMBER; i++) {
-            for (int j = 0; j < MAGIC_NUMBER; j++) {
-                copy[i][j] = field[i][j];
-            }
-        }
-        return copy;
+
+    private boolean isNotEmpty(Element[] answer) {
+        return answer != null && answer.length > 0;
+    }
+
+    private Element[] copyArray(Element[] elements) {
+        return Arrays.copyOf(elements, elements.length);
     }
 
 
     public static void main(String[] args) {
-//        Set<Long> set =  new HashSet<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L));
-//        set.remove(null);
-//        System.out.println();
         new Sudoku(Test.superHard).showCurrentWithValues();
-
-//
-//        List<Element> e = new ArrayList<>(2);
-//        e.add(new Element(1L));
-//        e.add(new Element(2L));
-//
-//
-//        Iterator<Element> ii = e.iterator();
-//
-//        ii.next().addPossibleValue(10L);
-//        ii.next().addPossibleValue(11L);
-//
-//        int i = 0;
-//        System.out.println("-----------------");
-//        for (; i < 11;) {
-//            System.out.print(i);
-//            if (++i % 9 == 0)
-//                System.out.println();
-//        }
     }
 
 }

@@ -1,4 +1,4 @@
-package ru.whoy.asList;
+package ru.whoy.odm;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +24,10 @@ public class Element {
         this(value);
         this.rowNumber = rowNumber;
         this.lineNumber = lineNumber;
+    }
+
+    public Element(Element element, Long value) {
+        this(value, element.getRowNumber(), element.getLineNumber());
     }
 
     public Long getValue() {

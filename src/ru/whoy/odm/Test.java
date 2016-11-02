@@ -1,4 +1,4 @@
-package ru.whoy.asList;
+package ru.whoy.odm;
 
 /**
  * Created by WHOY on 22.10.2016.
