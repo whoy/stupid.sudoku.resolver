@@ -18,6 +18,7 @@ public class Sudoku {
         // // TODO: 22.10.2016  сделать проверку введённого добра
         initializeLocalMassive(field);
         initPossibleValues(elements);
+        resolve(elements);
     }
 
     private void initializeLocalMassive(Long[][] field) {
@@ -103,7 +104,7 @@ public class Sudoku {
         return new HashSet<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L));
     }
 
-    public void resolve(Element[][] field) {
+    void resolve(Element[][] field) {
         Element[][] localField = copyArray(field);
         for (int i = 0; i < MAGIC_NUMBER; i++) {
             for (int j = 0; j < MAGIC_NUMBER; j++) {
@@ -153,7 +154,8 @@ public class Sudoku {
 //        Set<Long> set =  new HashSet<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L));
 //        set.remove(null);
 //        System.out.println();
-        new Sudoku(Test.superHard).showWithValues();
+//        new Sudoku(Test.superHard).showWithValues();
+        new Sudoku(Test.superHard).show();
     }
 
 }
