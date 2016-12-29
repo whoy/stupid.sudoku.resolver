@@ -18,7 +18,10 @@ public class Sudoku {
         // // TODO: 22.10.2016  сделать проверку введённого добра
         initializeLocalMassive(field);
         initPossibleValues(elements);
+        showWithValues();
+        printDLine();
         resolve(elements);
+        show();
     }
 
     private void initializeLocalMassive(Long[][] field) {
@@ -29,7 +32,11 @@ public class Sudoku {
         }
     }
 
-    public void show() {
+    private void printDLine() {
+        System.out.println("======================================");
+    }
+
+    private void show() {
         for (int i = 0; i < MAGIC_NUMBER; i++) {
             for (int j = 0; j < MAGIC_NUMBER; j++) {
                 System.out.print(String.format("%6d",elements[i][j].getValue() ));
@@ -38,7 +45,16 @@ public class Sudoku {
         }
     }
 
-    public void showWithValues() {
+    private void show(Element[][] elements) {
+        for (int i = 0; i < MAGIC_NUMBER; i++) {
+            for (int j = 0; j < MAGIC_NUMBER; j++) {
+                System.out.print(String.format("%6d",elements[i][j].getValue() ));
+            }
+            System.out.println();
+        }
+    }
+
+    private void showWithValues() {
         for (int i = 0; i < MAGIC_NUMBER; i++) {
             for (int j = 0; j < MAGIC_NUMBER; j++) {
                 System.out.print(String.format("%6d (%d,%d) values",elements[i][j].getValue(), i, j));
@@ -104,39 +120,50 @@ public class Sudoku {
         return new HashSet<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L));
     }
 
-    void resolve(Element[][] field) {
-        Element[][] localField = copyArray(field);
+    /**
+     * Это решение?
+     * Да - печать решения
+     * Нет - Доступны ещё пустые?
+     *       Да - новое предположение.
+     *       Нет - Возврат.
+     */
+
+    private boolean hasMoreNullElements(Element[][] field) {
         for (int i = 0; i < MAGIC_NUMBER; i++) {
             for (int j = 0; j < MAGIC_NUMBER; j++) {
-                if (localField[i][j].getValue() == null) {
-                    Iterator<Long> iterator = localField[i][j].getPossibleValues().iterator();
-                    while(iterator.hasNext()) {
-                        Long value = iterator.next();
-                        if (isItPossible(copyArray(field), i, j, value)) {
-                            localField[i][j].setValue(value);
-                            initPossibleValues(localField);
-                            resolve(localField);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean isItPossible(Element[][] elements, int i, int j, Long value) {
-        elements[i][j].setValue(value);
-        initPossibleValues(elements);
-        return !isHasNullPossibleSets(elements);
-    }
-
-    private boolean isHasNullPossibleSets(Element[][] elements) {
-        for (int i = 0; i < MAGIC_NUMBER; i++) {
-            for (int j = 0; j < MAGIC_NUMBER; j++) {
-                if (elements[i][j].getValue() == null && (elements[i][j].getPossibleValues() == null || elements[i][j].getPossibleValues().isEmpty()))
+                if (field[i][j].getValue() == null)
                     return true;
             }
         }
         return false;
+    }
+
+    private void resolve(Element[][] field) {
+
+//        if (!hasMoreNullElements(field)) {
+//            show(field);
+//            return;
+//        }
+
+        
+        // // TODO: 29.12.2016 почему не все поля заполняет? 
+        Element[][] localField = copyArray(field);
+        for (int i = 0; i < MAGIC_NUMBER; i++) {
+            for (int j = 0; j < MAGIC_NUMBER; j++) {
+                if (localField[i][j].getValue() == null) {
+                    for(Long value : localField[i][j].getPossibleValues()) {
+                        localField[i][j].setValue(value);
+                        initPossibleValues(localField);
+                        if (!hasMoreNullElements(field)) {
+                            show(field);
+                            return;
+                        }
+                        resolve(localField);
+//                        localField = copyArray(field);
+                    }
+                }
+            }
+        }
     }
 
     private Element[][] copyArray(Element[][] field) {
@@ -149,13 +176,9 @@ public class Sudoku {
         return copy;
     }
 
-
-    public static void main(String[] args) {
-//        Set<Long> set =  new HashSet<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L));
-//        set.remove(null);
-//        System.out.println();
-//        new Sudoku(Test.superHard).showWithValues();
-        new Sudoku(Test.superHard).show();
+    public static void main(String[] args) throws InterruptedException {
+        new Sudoku(Test.superNorm);
+        Thread.sleep(1000);
     }
 
 }

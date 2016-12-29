@@ -26,10 +26,10 @@ public class Test {
                                         {  6L, null, null,   4L, null,   8L, null,   9L, null}};
 
 
-    private static Long[][] field = superHard;
+    private static Long[][] field = superNorm;
 
     public static void main(String[] args) {
-        new Sudoku(Test.field).show();
+        new Sudoku(Test.field);
     }
 
 
