@@ -146,7 +146,7 @@ public class Sudoku {
 //        }
 
         
-        // // TODO: 29.12.2016 почему не все поля заполняет? 
+        // // TODO: 29.12.2016 почему не все поля заполняет?
         Element[][] localField = copyArray(field);
         for (int i = 0; i < MAGIC_NUMBER; i++) {
             for (int j = 0; j < MAGIC_NUMBER; j++) {
